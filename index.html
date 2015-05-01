@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Media-Plyr</title>
+    <meta name="description" content="A simple HTML5 media player with custom controls and WebVTT captions.">
+    <meta name="author" content="Calvin Tam">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./docs.css" />
+    <link rel="stylesheet" type="text/css" href="./plyr-1.1.5.css" />
+    <script type="text/javascript" src="./jquery-2.1.3.js" defer></script>
+    <script type="text/javascript" src="./plyr-1.1.5.js" defer></script>
+    <script type="text/javascript" src="./docs.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Media-Plyr</h1>
+        <p>A media player for every device powered by Plyr with custom controls and WebVTT captions.</p>
+    </header>
+
+    <main>
+        <section class="selector">
+            <p>
+                <label>Video:</label>
+                <input type="file" name="source" required />
+            </p>
+            <p>
+                <label>Subtitle:</label>
+                <input type="file" name="track" />
+            </p>
+            <p><button id="open" class="btn">Open</button></p>
+        </section>
+        <section class="example-video">
+            <div class="player">
+                <video controls crossorigin>
+                    <!-- Video files -->
+                    <source src="https://cdn.selz.com/plyr/1.0/movie.mp4" type="video/mp4">
+                    
+                    <!-- Text track file -->
+                    <track kind="captions" label="English" srclang="en" src="https://cdn.selz.com/plyr/1.0/en.vtt" default>
+                    
+                    <!-- Fallback for browsers that don't support the <video> element -->
+                    <a href="https://cdn.selz.com/plyr/1.0/movie.mp4">Download</a>
+                </video>
+            </div>
+            <small id="currentFiles"></small>
+        </section>
+    </main>
+
+    <footer>
+        <p>Powered by <a href="https://plyr.io">Plyr</a></p>
+    </footer>
+</body>
+</html>
