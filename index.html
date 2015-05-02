@@ -15,7 +15,7 @@
 <body>
     <header>
         <h1>Media-Plyr</h1>
-        <p>A media player for every device powered by Plyr with custom controls and WebVTT captions.</p>
+        <p>A media player for every device powered by <a href="https://plyr.io">Plyr</a> with custom controls and WebVTT captions.</p>
     </header>
 
     <main>
@@ -24,24 +24,15 @@
                 <label>Video:</label>
                 <input type="file" name="source" required />
             </p>
-            <p>
+            <!--<p>
                 <label>Subtitle:</label>
                 <input type="file" name="track" />
-            </p>
-            <p><button id="open" class="btn">Open</button></p>
+            </p>-->
+            <p><button name="status" class="btn" disabled></button></p>
         </section>
         <section class="example-video">
             <div class="player">
-                <video controls crossorigin>
-                    <!-- Video files -->
-                    <source src="https://cdn.selz.com/plyr/1.0/movie.mp4" type="video/mp4">
-                    
-                    <!-- Text track file -->
-                    <track kind="captions" label="English" srclang="en" src="https://cdn.selz.com/plyr/1.0/en.vtt" default>
-                    
-                    <!-- Fallback for browsers that don't support the <video> element -->
-                    <a href="https://cdn.selz.com/plyr/1.0/movie.mp4">Download</a>
-                </video>
+                <video controls crossorigin></video>
             </div>
             <small id="currentFiles"></small>
         </section>

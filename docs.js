@@ -408,6 +408,7 @@ templates.controls = new Hogan.Template({
 });
 plyr.setup({
     volume: 10,
+    seekTime: 3,
     html: templates.controls.render({}),
     captions: {
         defaultActive: !0
@@ -430,8 +431,33 @@ plyr.setup({
         b.insertBefore(c,b.childNodes[0])
     }
 })(document, "https://cdn.plyr.io/1.1.5/sprite.svg");
-/*$(document).ready({
-   $("#open").onClick(function(){
-       
-   });
-});*/
+$(document).ready(function() {
+    function defaultStatus() {
+        $("button[name=status]").text("Please select video and/or subtitle");
+    }
+    defaultStatus();
+    $("input[name=source]").change(function() {
+        if ($(".player")[0].plyr.support(this.files[0].type)) {
+            $("button[name=status]").text("Loading... This might take a few seconds");
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                $(".player")[0].plyr.source(event.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        } else {
+            $("button[name=status]").text("I don't support this format.. Sorry!").delay(300).defaultStatus();
+        }
+    });
+    /*$("input[name=track]").change(function() {
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            //convert to vtt from any format
+            //$(".player")[0].plyr.source(event.target.result);
+        }
+        reader.readAsDataURL(this.files[0]);
+        $("button[name=status]").text("Subtitle is ready!");
+    });*/
+    $(".player")[0].plyr.media.addEventListener("loadstart", function() {
+        $("button[name=status]").text("Video is ready!");
+    });
+});
