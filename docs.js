@@ -13,36 +13,36 @@ plyr.setup({
     }
 });
 function defaultStatus() {
-    $("button[name=status]").text("Please select video before subtitle (optional)");
+    $("#status").text("Please select video before subtitle (optional)");
 }
+defaultStatus();
 $(document).ready(function() {
-    defaultStatus();
     $("input[name=source]").change(function() {
         if ($(".player")[0].plyr.support(this.files[0].type)) {
-            $("button[name=status]").text("Loading video... This might take a few seconds");
+            $("#status").text("Loading video... This might take a few seconds");
             var reader = new FileReader();
             reader.onload = function(event) {
                 $(".player")[0].plyr.source(event.target.result);
             }
             reader.readAsDataURL(this.files[0]);
         } else {
-            $("button[name=status]").text("I don't support this format... Sorry!");
+            $("#status").text("I don't support this format... Sorry!");
             setTimeout(defaultStatus, 5000);
         }
     });
-    /*$("input[name=track]").change(function() {
-        $("button[name=status]").text("Loading subtitle... This might take a few seconds");
+    $("input[name=track]").change(function() {
+        $("#status").text("Loading subtitle... This might take a few seconds");
         var reader = new FileReader();
         reader.onload = function(event) {
             //convert to srt from any format
             //$(".player")[0].plyr.source(event.target.result);
         }
         reader.readAsDataURL(this.files[0]);
-        $("button[name=status]").text("Subtitle is ready!");
+        $("#status").text("Subtitle is ready!");
         setTimeout(defaultStatus, 5000);
-    });*/
+    });
     $(".player")[0].plyr.media.addEventListener("stalled", function() {
-        $("button[name=status]").text("Video is ready!");
+        $("#status").text("Video is ready!");
         setTimeout(defaultStatus, 5000);
     });
 });
