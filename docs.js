@@ -13,25 +13,25 @@ plyr.setup({
     }
 });
 function defaultStatus() {
-    $("#status").text("Please select video before subtitle");
+    $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
 }
 defaultStatus();
 $(document).ready(function() {
     $("input[name=source]").change(function() {
         if ($(".player")[0].plyr.support(this.files[0].type)) {
-            $("#status").text("Loading video... This might take a while, and browser might freeze");
+            $("#status").text("Loading video... This might take a while, and browser might freeze or crash");
             var reader = new FileReader();
             reader.onload = function(event) {
                 $(".player")[0].plyr.source(event.target.result);
             }
             reader.readAsDataURL(this.files[0]);
         } else {
-            $("#status").text("This format is not supported... Sorry!");
+            $("#status").text("This format is not supported yet... Sorry! Try MP4 or WEBM format");
             setTimeout(defaultStatus, 5000);
         }
     });
     $(".player")[0].plyr.media.addEventListener("stalled", function() {
-        $("#status").text("Video is ready! Look down for the player");
+        $("#status").text("Video is ready! Look down for the player and click on Play icon");
         setTimeout(defaultStatus, 5000);
     });
     $("input[name=track]").change(function() {
@@ -42,7 +42,7 @@ $(document).ready(function() {
             //$(".player")[0].plyr.source(event.target.result);
         }
         reader.readAsDataURL(this.files[0]);
-        $("#status").text("Subtitle is ready! Toggle caption icon at the bottom");
+        $("#status").text("Subtitle is ready! Toggle caption icon at the bottom to activate it");
         setTimeout(defaultStatus, 5000);
     });
 });
