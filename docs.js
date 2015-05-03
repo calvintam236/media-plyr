@@ -45,4 +45,8 @@ $(document).ready(function() {
         $("#status").text("Subtitle is ready! Toggle caption icon at the bottom to activate it");
         setTimeout(defaultStatus, 5000);
     });
+    $("a[href=#]").click(function() {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        return false;
+    });
 });
