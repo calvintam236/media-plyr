@@ -12,11 +12,12 @@ plyr.setup({
             e = document.querySelector("[data-toggle='fullscreen']");
     }
 });
-function defaultStatus() {
-    $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
-}
-defaultStatus();
 $(document).ready(function() {
+    function defaultStatus() {
+        $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
+    }
+    //$("input[name=track]").prop("disabled", true);
+    defaultStatus();
     $("input[name=source]").change(function() {
         if ($(".player")[0].plyr.support(this.files[0].type)) {
             $("#status").text("Loading video... This might take a while, and browser might freeze or crash");
@@ -30,20 +31,29 @@ $(document).ready(function() {
             setTimeout(defaultStatus, 5000);
         }
     });
-    $(".player")[0].plyr.media.addEventListener("stalled", function() {
-        $("#status").text("Video is ready! Look down for the player and click on Play icon");
-        setTimeout(defaultStatus, 5000);
+    $(".player")[0].plyr.media.addEventListener("loadstart", function() {
+        //$("input[name=track]").removeProp("disabled");
+        $("#status").text("Video is ready! Look down for the player and toggle Play icon");
+        setTimeout(defaultStatus, 10000);
     });
     $("input[name=track]").change(function() {
-        $("#status").text("Loading subtitle...");
-        var reader = new FileReader();
-        reader.onload = function(event) {
-            //convert to srt from any format
-            //$(".player")[0].plyr.source(event.target.result);
+        if (this.files[0].type == "text/x-ssa" || this.files[0].type == "application/x-subrip" || this.files[0].type == "text/x-subviewer") {
+            $("#status").text("Loading subtitle... You might encounter sync problem");
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                switch (event.target) {
+                
+                }
+                //convert to srt from any format
+                //$(".player")[0].plyr.track(event.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+            $("#status").text("Subtitle is ready! Toggle caption icon at the bottom to activate it");
+            setTimeout(defaultStatus, 10000);
+        } else {
+            $("#status").text("This format is not supported yet... Sorry! Try AAS, SSA, SRT or SUB format");
+            setTimeout(defaultStatus, 5000);
         }
-        reader.readAsDataURL(this.files[0]);
-        $("#status").text("Subtitle is ready! Toggle caption icon at the bottom to activate it");
-        setTimeout(defaultStatus, 5000);
     });
     $("a[href=#]").click(function() {
         $("html, body").animate({ scrollTop: 0 }, "slow");
