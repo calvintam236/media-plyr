@@ -33,7 +33,7 @@ $(document).ready(function() {
     });
     $(".player")[0].plyr.media.addEventListener("loadstart", function() {
         //$("input[name=track]").removeProp("disabled");
-        $("#status").text("Video is ready! Look down for the player and toggle Play icon");
+        $("#status").text("Video is ready! Look down for the player and click 'Play'a icon");
         setTimeout(defaultStatus, 10000);
     });
     $("input[name=track]").change(function() {
@@ -48,7 +48,7 @@ $(document).ready(function() {
                 //$(".player")[0].plyr.track(event.target.result);
             }
             reader.readAsDataURL(this.files[0]);
-            $("#status").text("Subtitle is ready! Toggle caption icon at the bottom to activate it");
+            $("#status").text("Subtitle is ready! Click 'Caption' icon at the bottom to activate it");
             setTimeout(defaultStatus, 10000);
         } else {
             $("#status").text("This format is not supported yet... Sorry! Try AAS, SSA, SRT or SUB format");
