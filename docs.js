@@ -106,7 +106,7 @@ $(document).ready(function() {
                         //$(".player")[0].plyr.track(event.target.result);
                     }
                     reader.readAsDataURL(this.files[0]);
-                    $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to activate it");
+                    $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to enable subtitle");
                     setTimeout(defaultStatus, 10000);
                     break;
                 default:
