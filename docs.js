@@ -5,7 +5,7 @@ plyr.setup({
     seekTime: 3,
     html: templates.controls.render({}),
     captions: {
-        defaultActive: !0
+        defaultActive: true
     },
     onSetup: function() {
         var t = this,
@@ -27,7 +27,7 @@ $(document).ready(function() {
         videoPlayer.pause();
         audioPlayer.pause();
     }
-    //$("input[name=track]").prop("disabled", true);
+    $(".track").hide();
     defaultStatus();
     hideAllPlayers();
     $(document).keydown(function(event) {
@@ -63,26 +63,28 @@ $(document).ready(function() {
                 currentMode = "audio";
                 currentPlayer = audioPlayer;
             }
-            $("#status").text("Loading " + currentMode + "... This might take a while, and browser might freeze or crash");
-            var reader = new FileReader();
-            reader.onload = function(event) {
-                closeAllPlayers();
-                $("." + currentMode).show();
-                currentPlayer.source(event.target.result);
-            }
-            reader.readAsDataURL(this.files[0]);
-            if (!this.files[0].type.match(/^video/) && !this.files[0].type.match(/^audio/)) {
-                $("#status").text("Not supported format... Try MP4, WEBM, MP3 or OGG for audio");
+            if (this.files[0].type.match(/^video/) || this.files[0].type.match(/^audio/)) {
+                $("#status").text("Loading " + currentMode + "... This might take a while, and browser might freeze or crash");
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    closeAllPlayers();
+                    $("." + currentMode).show();
+                    currentPlayer.source(event.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                $("#status").text("Not supported format... Try MP4, WEBM, MP3 or OGG");
                 setTimeout(defaultStatus, 5000);
             }
         }
     });
     videoPlayer.media.addEventListener("loadstart", function() {
-        //$("input[name=track]").removeProp("disabled");
+        $(".track").show();
         $("#status").text("Video is ready! Look down for the player and click 'Play' icon");
         setTimeout(defaultStatus, 10000);
     });
     audioPlayer.media.addEventListener("loadstart", function() {
+        $(".track").hide();
         $("#status").text("Audio is ready! Look down for the player and click 'Play' icon");
         setTimeout(defaultStatus, 10000);
     });
