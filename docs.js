@@ -23,7 +23,7 @@ $(document).ready(function() {
         $(".video").hide();
         $(".audio").hide();
     }
-    function closeAllPlayers() {
+    function pauseAllPlayers() {
         videoPlayer.pause();
         audioPlayer.pause();
     }
@@ -53,6 +53,9 @@ $(document).ready(function() {
                 return;
         }
     });
+    $("input[name=source]").click(function() {
+        pauseAllPlayers();
+    });
     $("input[name=source]").change(function() {
         if (this.files[0] !== undefined) {
             hideAllPlayers();
@@ -64,28 +67,27 @@ $(document).ready(function() {
                 currentPlayer = audioPlayer;
             }
             if (this.files[0].type.match(/^video/) || this.files[0].type.match(/^audio/)) {
-                $("#status").text("Loading " + currentMode + "... This might take a while, and browser might freeze or crash");
+                $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
                 var reader = new FileReader();
                 reader.onload = function(event) {
-                    closeAllPlayers();
                     $("." + currentMode).show();
                     currentPlayer.source(event.target.result);
                 }
                 reader.readAsDataURL(this.files[0]);
             } else {
-                $("#status").text("Not supported format... Try MP4, WEBM, MP3 or OGG");
+                $("#status").text("Not supported format... Try MP4, WEBM, MP3 or OGG format");
                 setTimeout(defaultStatus, 5000);
             }
         }
     });
     videoPlayer.media.addEventListener("loadstart", function() {
         $(".track").show();
-        $("#status").text("Video is ready! Look down for the player and click 'Play' icon");
+        $("#status").text("Video is ready! Look down for the player and click 'Play'");
         setTimeout(defaultStatus, 10000);
     });
     audioPlayer.media.addEventListener("loadstart", function() {
         $(".track").hide();
-        $("#status").text("Audio is ready! Look down for the player and click 'Play' icon");
+        $("#status").text("Audio is ready! Look down for the player and click 'Play'");
         setTimeout(defaultStatus, 10000);
     });
     $("input[name=track]").change(function() {
@@ -104,11 +106,11 @@ $(document).ready(function() {
                         //$(".player")[0].plyr.track(event.target.result);
                     }
                     reader.readAsDataURL(this.files[0]);
-                    $("#status").text("Subtitle is ready! Click 'Caption' icon at the bottom to activate it");
+                    $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to activate it");
                     setTimeout(defaultStatus, 10000);
                     break;
                 default:
-                    $("#status").text("This format is not supported yet... Sorry! Try AAS, SSA, SRT or SUB format");
+                    $("#status").text("Not supported format... Try AAS, SSA, SRT or SUB format");
                     setTimeout(defaultStatus, 5000);
                     break;
             }
