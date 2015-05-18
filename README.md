@@ -1,2 +1,2 @@
 # Media-Plyr
-A media player for every device powered by Plyr.
+A local subtitle-capable media player that powered by Plyr for all devices.
