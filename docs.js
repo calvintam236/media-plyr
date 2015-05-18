@@ -33,7 +33,7 @@ $(document).ready(function() {
     });
     $(".player")[0].plyr.media.addEventListener("loadstart", function() {
         //$("input[name=track]").removeProp("disabled");
-        $("#status").text("Video is ready! Look down for the player and click 'Play'a icon");
+        $("#status").text("Video is ready! Look down for the player and click 'Play' icon");
         setTimeout(defaultStatus, 10000);
     });
     $("input[name=track]").change(function() {
