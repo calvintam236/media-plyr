@@ -7,9 +7,9 @@
     <meta name="author" content="Calvin Tam">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="./docs.css" />
-    <link rel="stylesheet" type="text/css" href="./plyr-1.1.5.css" />
-    <script type="text/javascript" src="./jquery-2.1.3.js"></script>
-    <script type="text/javascript" src="./plyr-1.1.5.js"></script>
+    <link rel="stylesheet" type="text/css" href="./plyr-1.1.10.css" />
+    <script type="text/javascript" src="./jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="./plyr-1.1.10.js"></script>
     <script type="text/javascript" src="./docs.js" defer></script>
 </head>
 <body>
@@ -20,24 +20,29 @@
 
     <main>
         <section class="selector">
-            <p>
+            <p class="source">
                 <span class="btn btn-default btn-file">
-                    Browse video <input type="file" name="source" accept="video/mp4,video/webm" />
+                    Browse video/ audio <input type="file" name="source" accept="video/mpeg,video/mp4,video/webm,audio/mp4,audio/webm,audio/ogg,audio/mpeg3" />
                 </span>
             </p>
-            <p>
+            <p class="track">
                 <span class="btn btn-default btn-file">
-                    Browse subtitle (optional) <input type="file" name="track" accept="text/x-ssa,application/x-subrip,text/x-subviewer" />
+                    Browse subtitle for video (optional) <input type="file" name="track" accept="text/x-ssa,application/x-subrip,text/x-subviewer" />
                 </span>
             </p>
             <p><small id="status"></small></p>
         </section>
         <section class="video">
             <div class="player">
-                <video controls crossorigin></video>
+                <video controls></video>
             </div>
         </section>
-        <p><small><a href="#">Go up</a></small></p>
+        <section class="audio">
+            <div class="player">
+                <audio controls></audio>
+            </div>
+        </section>
+        <p><small><a href="#">Scroll up</a></small></p>
     </main>
 
     <footer>
