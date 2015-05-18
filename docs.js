@@ -49,16 +49,18 @@ $(document).ready(function() {
         }
     });
     $("input[name=source]").change(function() {
-        if ($(".player")[0].plyr.support(this.files[0].type)) {
-            $("#status").text("Loading video... This might take a while, and browser might freeze or crash");
-            var reader = new FileReader();
-            reader.onload = function(event) {
-                $(".player")[0].plyr.source(event.target.result);
+        if (this.files[0] !== undefined) {
+            if ($(".player")[0].plyr.support(this.files[0].type)) {
+                $("#status").text("Loading video... This might take a while, and browser might freeze or crash");
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    $(".player")[0].plyr.source(event.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                $("#status").text("This format is not supported yet... Sorry! Try MP4 or WEBM format");
+                setTimeout(defaultStatus, 5000);
             }
-            reader.readAsDataURL(this.files[0]);
-        } else {
-            $("#status").text("This format is not supported yet... Sorry! Try MP4 or WEBM format");
-            setTimeout(defaultStatus, 5000);
         }
     });
     $(".player")[0].plyr.media.addEventListener("loadstart", function() {
