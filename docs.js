@@ -33,6 +33,11 @@ $(document).ready(function() {
     $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
+                case 13:
+                    if (currentMode == "video") {
+                        currentPlayer.toggleFullscreen();
+                    }
+                    return false;
                 case 32:
                     if (currentPlayer.media.paused) {
                         currentPlayer.play();
