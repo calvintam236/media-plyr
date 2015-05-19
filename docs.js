@@ -53,7 +53,7 @@ $(document).ready(function() {
                 return;
         }
     });
-    $("input[name=source]").click(function() {
+    $("input[type=file]").click(function() {
         pauseAllPlayers();
     });
     $("input[name=source]").change(function() {
