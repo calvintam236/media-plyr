@@ -57,8 +57,6 @@ $(document).ready(function() {
                 case 40:
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
                     return false;
-                default:
-                    return;
             }
         }
     });
