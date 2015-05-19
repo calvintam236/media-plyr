@@ -13,52 +13,120 @@ plyr.setup({
             e = document.querySelector("[data-toggle='fullscreen']");
     }
 });
+function toWebVTT(type, text) {
+    var rawLines = new Array(), processedLines = new Array(), identifier = new Array(), cue = 0, final = "";
+    rawLines = text.split("\n");
+    switch (type) {
+        case "ass":
+            for (i = 0; i < rawLines.length; i++) {
+                if (rawLines[i].toUpperCase().indexOf("[EVENTS]") > -1) {
+                    rawLines.splice(0, i + 1);
+                    break;
+                }
+            }
+            for (i = 0; i < rawLines.length; i++) {
+                var line = new Array();
+                if (rawLines[i].length > 0) {
+                    var lineArray = new Array();
+                    lineArray[0] = rawLines[i].split(": ");
+                    lineArray[1] = lineArray[0][1].split(",");
+                    line[0] = lineArray[0][0];
+                    line = line.concat(lineArray[1]);
+                    if (line[0].toUpperCase().indexOf("FORMAT") > -1) {
+                        for (j = 1; j < line.length; j++) {
+                            if (line[j].toUpperCase().indexOf("START") > -1) {
+                                identifier[0] = j;
+                                continue;
+                            }
+                            if (line[j].toUpperCase().indexOf("END") > -1) {
+                                identifier[1] = j;
+                                continue;
+                            }
+                            if (line[j].toUpperCase().indexOf("TEXT") > -1) {
+                                identifier[2] = j;
+                                continue;
+                            }
+                        }
+                    } else {
+                        processedLines[cue] = new Array();
+                        processedLines[cue++] = [line[identifier[0]], line[identifier[1]], line[identifier[2]]];
+                    }
+                }
+            }
+            break;
+        case "ssa":
+            break;
+        case "srt":
+            break;
+    }
+    if (cue > 0) {
+        final += "WEBVTT\n";
+        for (i = 0; i < cue; i++) {
+            final += "\n" + (i + 1) + "\n";
+            timing = new Array();
+            for (j = 0; j < 2; j++) {
+                timing[j] = new Date("0000-01-01 " + processedLines[i][j]);
+                processedLines[i][j] = ("0" + timing[j].getHours()).slice(-2) + ":" + ("0" + timing[j].getMinutes()).slice(-2) + ":" + ("0" + timing[j].getSeconds()).slice(-2) + "." + ("00" + timing[j].getMilliseconds()).slice(-3);
+            }
+            final += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
+        }
+    }
+    console.log(final);
+    return final;
+}
 $(document).ready(function() {
     videoPlayer = $(".video .player")[0].plyr;
     audioPlayer = $(".audio .player")[0].plyr;
     function defaultStatus() {
         $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
     }
-    function hideAllPlayers() {
+    function hidePlayers() {
+        $(".track").hide();
         $(".video").hide();
         $(".audio").hide();
     }
-    function pauseAllPlayers() {
+    function pausePlayers() {
         videoPlayer.pause();
         audioPlayer.pause();
     }
-    $(".track").hide();
     defaultStatus();
-    hideAllPlayers();
+    hidePlayers();
     $(document).keydown(function(event) {
-        switch(event.which) {
-            /*case 32:
-                $(".player")[0].plyr.media.on("playing", function() {
-                    this.parent.pause();
-                });
-                return false;*/
-            case 37:
-                currentPlayer.rewind();
-                return false;
-            case 38:
-                currentPlayer.setVolume(currentPlayer.media.volume * 10 + 1);
-                return false;
-            case 39:
-                currentPlayer.forward();
-                return false;
-            case 40:
-                currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
-                return false;
-            default:
-                return;
+        if (currentPlayer !== undefined) {
+            switch(event.which) {
+                case 13:
+                    if (currentMode == "video") {
+                        currentPlayer.toggleFullscreen();
+                    }
+                    return false;
+                case 32:
+                    if (currentPlayer.media.paused) {
+                        currentPlayer.play();
+                    } else {
+                        currentPlayer.pause();
+                    }
+                    return false;
+                case 37:
+                    currentPlayer.rewind();
+                    return false;
+                case 38:
+                    currentPlayer.setVolume(currentPlayer.media.volume * 10 + 1);
+                    return false;
+                case 39:
+                    currentPlayer.forward();
+                    return false;
+                case 40:
+                    currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
+                    return false;
+            }
         }
     });
-    $("input[name=source]").click(function() {
-        pauseAllPlayers();
+    $("input[type=file]").click(function() {
+        pausePlayers();
     });
     $("input[name=source]").change(function() {
         if (this.files[0] !== undefined) {
-            hideAllPlayers();
+            hidePlayers();
             if (this.files[0].type.match(/^video/)) {
                 currentMode = "video";
                 currentPlayer = videoPlayer;
@@ -86,31 +154,51 @@ $(document).ready(function() {
         setTimeout(defaultStatus, 10000);
     });
     audioPlayer.media.addEventListener("loadstart", function() {
-        $(".track").hide();
         $("#status").text("Audio is ready! Look down for the player and click 'Play'");
         setTimeout(defaultStatus, 10000);
     });
     $("input[name=track]").change(function() {
         if (this.files[0] !== undefined) {
             switch (this.files[0].type) {
+                case "":
+                case "text/x-ass":
                 case "text/x-ssa":
                 case "application/x-subrip":
-                case "text/x-subviewer":
-                    $("#status").text("Loading subtitle... You might encounter sync problem");
+                case "text/vtt":
+                    $("#status").text("Loading subtitle... You might encounter sync problem while playing");
+                    var type;
+                    switch (this.files[0].type) {
+                        case "":
+                        case "text/x-ass":
+                            type = "ass";
+                            break;
+                        case "text/x-ssa":
+                            type = "ssa";
+                            break;
+                        case "application/x-subrip":
+                            type = "srt";
+                            break;
+                        case "text/vtt":
+                            type = "vtt";
+                            break;
+                    }
                     var reader = new FileReader();
                     reader.onload = function(event) {
-                        switch (event.target) {
-                
+                        switch (type) {
+                            case "vtt":
+                                var webvtt = event.target.result;
+                                break
+                            default:
+                                var webvtt = toWebVTT(type, event.target.result);
                         }
-                        //convert to srt from any format
-                        //$(".player")[0].plyr.track(event.target.result);
+                        //currentPlayer.track(webvtt);
                     }
-                    reader.readAsDataURL(this.files[0]);
-                    $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to activate it");
+                    reader.readAsText(this.files[0]);
+                    $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to enable subtitle");
                     setTimeout(defaultStatus, 10000);
                     break;
                 default:
-                    $("#status").text("Not supported format... Try AAS, SSA, SRT or SUB format");
+                    $("#status").text("Not supported format... Try AAS, SSA or SRT format");
                     setTimeout(defaultStatus, 5000);
                     break;
             }
