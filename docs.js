@@ -87,7 +87,8 @@ function toWebVTT(type, text) {
             final += "\n" + (i + 1) + "\n";
             timing = new Array();
             for (j = 0; j < 2; j++) {
-                timing[j] = new Date("0000-01-01T" + ("0" + processedLines[i][j]).slice(-12) + "Z");Milliseconds()).slice(-3);
+                timing[j] = new Date("0000-01-01T" + ("0" + processedLines[i][j]).slice(-12) + "Z");
+                processedLines[i][j] = ("0" + timing[j].getUTCHours()).slice(-2) + ":" + ("0" + timing[j].getUTCMinutes()).slice(-2) + ":" + ("0" + timing[j].getUTCSeconds()).slice(-2) + "." + ("00" + timing[j].getUTCMilliseconds()).slice(-3);
             }
             final += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
         }
@@ -203,7 +204,7 @@ $(document).ready(function() {
                     setTimeout(defaultStatus, 10000);
                     break;
                 default:
-                    $("#status").text("Not supported format or missing file extension... Try ASS, SSA or SRT format");
+                    $("#status").text("Not supported format or missing file extension... Try ASS, SSA, SRT or VTT format");
                     setTimeout(defaultStatus, 5000);
                     break;
             }
