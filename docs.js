@@ -122,6 +122,10 @@ $(document).ready(function() {
                         currentPlayer.toggleFullscreen();
                     }
                     return false;
+                case 27: //esc
+                    pausePlayers();
+                    hidePlayers();
+                    return false;
                 case 32: //spacebar
                     if (currentPlayer.media.paused) {
                         currentPlayer.play();
