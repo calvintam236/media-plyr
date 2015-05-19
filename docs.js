@@ -31,26 +31,30 @@ $(document).ready(function() {
     defaultStatus();
     hideAllPlayers();
     $(document).keydown(function(event) {
-        switch(event.which) {
-            /*case 32:
-                $(".player")[0].plyr.media.on("playing", function() {
-                    this.parent.pause();
-                });
-                return false;*/
-            case 37:
-                currentPlayer.rewind();
-                return false;
-            case 38:
-                currentPlayer.setVolume(currentPlayer.media.volume * 10 + 1);
-                return false;
-            case 39:
-                currentPlayer.forward();
-                return false;
-            case 40:
-                currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
-                return false;
-            default:
-                return;
+        if (currentPlayer !== undefined) {
+            switch(event.which) {
+                case 32:
+                    if (currentPlayer.media.paused) {
+                        currentPlayer.play();
+                    } else {
+                        currentPlayer.pause();
+                    }
+                    return false;
+                case 37:
+                    currentPlayer.rewind();
+                    return false;
+                case 38:
+                    currentPlayer.setVolume(currentPlayer.media.volume * 10 + 1);
+                    return false;
+                case 39:
+                    currentPlayer.forward();
+                    return false;
+                case 40:
+                    currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
+                    return false;
+                default:
+                    return;
+            }
         }
     });
     $("input[type=file]").click(function() {
