@@ -107,7 +107,7 @@ $(document).ready(function() {
         $(".track, .video, .audio").hide();
     }
     function defaultStatus() {
-        $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
+        $("#status").text("Note: Subtitle option is available after selected a video.");
     }
     function pausePlayers() {
         videoPlayer.pause();
@@ -166,18 +166,18 @@ $(document).ready(function() {
                 }
                 reader.readAsDataURL(source);
             } else {
-                $("#status").text("Not supported format... Try MP4, WEBM, MP3 or OGG format");
+                $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
                 setTimeout(defaultStatus, 5000);
             }
         }
     });
     videoPlayer.media.addEventListener("loadstart", function() {
         $(".track").show();
-        $("#status").text("Video is ready! Look down for the player and click 'Play'");
+        $("#status").text("Video is ready! Look for player below and click 'Play'/ spacebar");
         setTimeout(defaultStatus, 10000);
     });
     audioPlayer.media.addEventListener("loadstart", function() {
-        $("#status").text("Audio is ready! Look down for the player and click 'Play'");
+        $("#status").text("Audio is ready! Look for player below and click 'Play'/ spacebar");
         setTimeout(defaultStatus, 10000);
     });
     $("input[name=track]").change(function() {
@@ -195,7 +195,7 @@ $(document).ready(function() {
                         switch (extension) {
                             case "vtt":
                                 webvtt = event.target.result;
-                                break
+                                break;
                             default:
                                 webvtt = toWebVTT(extension, event.target.result);
                         }
@@ -206,7 +206,7 @@ $(document).ready(function() {
                     setTimeout(defaultStatus, 10000);
                     break;
                 default:
-                    $("#status").text("Not supported format or missing file extension... Try ASS, SSA, SRT or VTT format");
+                    $("#status").text("Not supported format or missing file extension... Officially support ASS, SSA, SRT and VTT formats");
                     setTimeout(defaultStatus, 5000);
             }
         }
