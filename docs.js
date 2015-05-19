@@ -19,17 +19,17 @@ $(document).ready(function() {
     function defaultStatus() {
         $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
     }
-    function hideAllPlayers() {
+    function hidePlayers() {
+        $(".track").hide();
         $(".video").hide();
         $(".audio").hide();
     }
-    function pauseAllPlayers() {
+    function pausePlayers() {
         videoPlayer.pause();
         audioPlayer.pause();
     }
-    $(".track").hide();
     defaultStatus();
-    hideAllPlayers();
+    hidePlayers();
     $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
@@ -63,11 +63,11 @@ $(document).ready(function() {
         }
     });
     $("input[type=file]").click(function() {
-        pauseAllPlayers();
+        pausePlayers();
     });
     $("input[name=source]").change(function() {
         if (this.files[0] !== undefined) {
-            hideAllPlayers();
+            hidePlayers();
             if (this.files[0].type.match(/^video/)) {
                 currentMode = "video";
                 currentPlayer = videoPlayer;
@@ -95,7 +95,6 @@ $(document).ready(function() {
         setTimeout(defaultStatus, 10000);
     });
     audioPlayer.media.addEventListener("loadstart", function() {
-        $(".track").hide();
         $("#status").text("Audio is ready! Look down for the player and click 'Play'");
         setTimeout(defaultStatus, 10000);
     });
