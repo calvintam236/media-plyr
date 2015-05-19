@@ -99,18 +99,20 @@ function toWebVTT(extension, text) {
 $(document).ready(function() {
     videoPlayer = $(".video .player")[0].plyr;
     audioPlayer = $(".audio .player")[0].plyr;
-    function defaultStatus() {
-        $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
+    function init() {
+        hidePlayers();
+        defaultStatus();
     }
     function hidePlayers() {
         $(".track, .video, .audio").hide();
+    }
+    function defaultStatus() {
+        $("#status").text("Please select video before subtitle (select subtitle again after new video selected)");
     }
     function pausePlayers() {
         videoPlayer.pause();
         audioPlayer.pause();
     }
-    defaultStatus();
-    hidePlayers();
     $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
@@ -213,4 +215,5 @@ $(document).ready(function() {
         $("html, body").animate({ scrollTop: 0 }, "slow");
         return false;
     });
+    init();
 });
