@@ -16,7 +16,8 @@ plyr.setup({
 });
 function toWebVTT(extension, text) {
     var rawLines = new Array(), processedLines = new Array(), cue = 0, webvtt = "", i, j;
-    rawLines = text.replace(/\r/g, "").split("\n");
+    // remove all CR and split into array by \r\n
+    rawLines = text.replace(/\r?\n|\r|\n/g, "\r\n").split("\r\n");
     switch (extension) {
         case "ass":
         case "ssa":
@@ -116,28 +117,28 @@ $(document).ready(function() {
     $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
-                case 13:
+                case 13: //enter
                     if (currentMode == "video") {
                         currentPlayer.toggleFullscreen();
                     }
                     return false;
-                case 32:
+                case 32: //spacebar
                     if (currentPlayer.media.paused) {
                         currentPlayer.play();
                     } else {
                         currentPlayer.pause();
                     }
                     return false;
-                case 37:
+                case 37: //left arrow
                     currentPlayer.rewind();
                     return false;
-                case 38:
+                case 38: //up arrow
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 + 1);
                     return false;
-                case 39:
+                case 39: //right arrow
                     currentPlayer.forward();
                     return false;
-                case 40:
+                case 40: //down arrow
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
                     return false;
             }
@@ -194,7 +195,7 @@ $(document).ready(function() {
                     reader.onload = function(event) {
                         switch (extension) {
                             case "vtt":
-                                webvtt = event.target.result;
+                                webvtt = event.target.result.replace(/\r?\n|\r|\n/g, "\r\n");
                                 break;
                             default:
                                 webvtt = toWebVTT(extension, event.target.result);
