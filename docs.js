@@ -146,6 +146,9 @@ $(document).ready(function() {
                         currentPlayer.toggleCaptions();
                     }
                     return false;
+                case 82: //key r
+                    currentPlayer.restart();
+                    return false;
             }
         }
     });
