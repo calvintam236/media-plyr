@@ -150,6 +150,9 @@ $(document).ready(function() {
                         currentPlayer.toggleCaptions();
                     }
                     return false;
+                case 77: //key m
+                    currentPlayer.toggleMute();
+                    return false;
                 case 82: //key r
                     currentPlayer.restart();
                     return false;
