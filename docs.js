@@ -18,6 +18,7 @@ function toWebVTT(type, text) {
     rawLines = text.replace(/\r/g, "").split("\n");
     switch (type) {
         case "ass":
+        case "ssa":
             var identifier = new Array();
             for (i = 0; i < rawLines.length; i++) {
                 if (rawLines[i].toUpperCase().indexOf("[EVENTS]") > -1) {
@@ -54,8 +55,6 @@ function toWebVTT(type, text) {
                     }
                 }
             }
-            break;
-        case "ssa":
             break;
         case "srt":
             for (i = 0; i < rawLines.length; i++) {
