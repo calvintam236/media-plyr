@@ -141,6 +141,11 @@ $(document).ready(function() {
                 case 40: //down arrow
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
                     return false;
+                case 67: //key c
+                    if (currentMode == "video") {
+                        currentPlayer.toggleCaptions();
+                    }
+                    return false;
             }
         }
     });
