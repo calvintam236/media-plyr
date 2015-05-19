@@ -14,10 +14,11 @@ plyr.setup({
     }
 });
 function toWebVTT(type, text) {
-    var rawLines = new Array(), processedLines = new Array(), identifier = new Array(), cue = 0, final = "";
-    rawLines = text.split("\n");
+    var rawLines = new Array(), processedLines = new Array(), cue = 0, final = "";
+    rawLines = text.replace(/\r/g, "").split("\n");
     switch (type) {
         case "ass":
+            var identifier = new Array();
             for (i = 0; i < rawLines.length; i++) {
                 if (rawLines[i].toUpperCase().indexOf("[EVENTS]") > -1) {
                     rawLines.splice(0, i + 1);
@@ -26,7 +27,7 @@ function toWebVTT(type, text) {
             }
             for (i = 0; i < rawLines.length; i++) {
                 var line = new Array();
-                if (rawLines[i].length > 0) {
+                if (rawLines[i].trim().length > 0) {
                     var lineArray = new Array();
                     lineArray[0] = rawLines[i].split(": ");
                     lineArray[1] = lineArray[0][1].split(",");
@@ -57,6 +58,27 @@ function toWebVTT(type, text) {
         case "ssa":
             break;
         case "srt":
+            for (i = 0; i < rawLines.length; i++) {
+                var line = new Array();
+                if (rawLines[i] == cue + 1) {
+                    continue;
+                } else if (rawLines[i].trim().length > 1) {
+                    if (rawLines[i].indexOf(" --> ") > -1) {
+                        line = rawLines[i].split(" --> ");
+                        processedLines[cue] = new Array();
+                        processedLines[cue][0] = line[0].replace(",", ".");
+                        processedLines[cue][1] = line[1].replace(",", ".");
+                        processedLines[cue][2] = "";
+                    } else {
+                        if (processedLines[cue][2].length > 0) {
+                            processedLines[cue][2] += "\n";
+                        }
+                        processedLines[cue][2] += rawLines[i];
+                    }
+                } else if (processedLines[cue] !== undefined) {
+                    cue++;
+                }
+            }
             break;
     }
     if (cue > 0) {
@@ -65,8 +87,7 @@ function toWebVTT(type, text) {
             final += "\n" + (i + 1) + "\n";
             timing = new Array();
             for (j = 0; j < 2; j++) {
-                timing[j] = new Date("0000-01-01 " + processedLines[i][j]);
-                processedLines[i][j] = ("0" + timing[j].getHours()).slice(-2) + ":" + ("0" + timing[j].getMinutes()).slice(-2) + ":" + ("0" + timing[j].getSeconds()).slice(-2) + "." + ("00" + timing[j].getMilliseconds()).slice(-3);
+                timing[j] = new Date("0000-01-01T" + ("0" + processedLines[i][j]).slice(-12) + "Z");Milliseconds()).slice(-3);
             }
             final += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
         }
@@ -159,29 +180,13 @@ $(document).ready(function() {
     });
     $("input[name=track]").change(function() {
         if (this.files[0] !== undefined) {
-            switch (this.files[0].type) {
-                case "":
-                case "text/x-ass":
-                case "text/x-ssa":
-                case "application/x-subrip":
-                case "text/vtt":
+            var type = this.files[0].name.substr((~-this.files[0].name.lastIndexOf(".") >>> 0) + 2);
+            switch (type) {
+                case "ass":
+                case "ssa":
+                case "srt":
+                case "vtt":
                     $("#status").text("Loading subtitle... You might encounter sync problem while playing");
-                    var type;
-                    switch (this.files[0].type) {
-                        case "":
-                        case "text/x-ass":
-                            type = "ass";
-                            break;
-                        case "text/x-ssa":
-                            type = "ssa";
-                            break;
-                        case "application/x-subrip":
-                            type = "srt";
-                            break;
-                        case "text/vtt":
-                            type = "vtt";
-                            break;
-                    }
                     var reader = new FileReader();
                     reader.onload = function(event) {
                         switch (type) {
@@ -198,7 +203,7 @@ $(document).ready(function() {
                     setTimeout(defaultStatus, 10000);
                     break;
                 default:
-                    $("#status").text("Not supported format... Try AAS, SSA or SRT format");
+                    $("#status").text("Not supported format or missing file extension... Try ASS, SSA or SRT format");
                     setTimeout(defaultStatus, 5000);
                     break;
             }
