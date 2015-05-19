@@ -14,10 +14,11 @@ plyr.setup({
     }
 });
 function toWebVTT(type, text) {
-    var rawLines = new Array(), processedLines = new Array(), cue = 0, final = "";
+    var rawLines = new Array(), processedLines = new Array(), cue = 0, webvtt = "";
     rawLines = text.replace(/\r/g, "").split("\n");
     switch (type) {
         case "ass":
+        case "ssa":
             var identifier = new Array();
             for (i = 0; i < rawLines.length; i++) {
                 if (rawLines[i].toUpperCase().indexOf("[EVENTS]") > -1) {
@@ -55,8 +56,6 @@ function toWebVTT(type, text) {
                 }
             }
             break;
-        case "ssa":
-            break;
         case "srt":
             for (i = 0; i < rawLines.length; i++) {
                 var line = new Array();
@@ -82,19 +81,19 @@ function toWebVTT(type, text) {
             break;
     }
     if (cue > 0) {
-        final += "WEBVTT\n";
+        webvtt += "WEBVTT\n";
         for (i = 0; i < cue; i++) {
-            final += "\n" + (i + 1) + "\n";
+            webvtt += "\n" + (i + 1) + "\n";
             timing = new Array();
             for (j = 0; j < 2; j++) {
                 timing[j] = new Date("0000-01-01T" + ("0" + processedLines[i][j]).slice(-12) + "Z");
                 processedLines[i][j] = ("0" + timing[j].getUTCHours()).slice(-2) + ":" + ("0" + timing[j].getUTCMinutes()).slice(-2) + ":" + ("0" + timing[j].getUTCSeconds()).slice(-2) + "." + ("00" + timing[j].getUTCMilliseconds()).slice(-3);
             }
-            final += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
+            webvtt += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
         }
     }
-    console.log(final);
-    return final;
+    console.log(webvtt);
+    return webvtt;
 }
 $(document).ready(function() {
     videoPlayer = $(".video .player")[0].plyr;
@@ -192,12 +191,13 @@ $(document).ready(function() {
                     reader.onload = function(event) {
                         switch (type) {
                             case "vtt":
-                                var webvtt = event.target.result;
+                                webvtt = event.target.result;
                                 break
                             default:
-                                var webvtt = toWebVTT(type, event.target.result);
+                                webvtt = toWebVTT(type, event.target.result);
                         }
-                        //currentPlayer.track(webvtt);
+                        console.log("data:text/vtt;base64," + window.btoa(webvtt))
+                        //currentPlayer.track("data:text/vtt;base64," + window.btoa(webvtt));
                     }
                     reader.readAsText(this.files[0]);
                     $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to enable subtitle");
@@ -206,7 +206,6 @@ $(document).ready(function() {
                 default:
                     $("#status").text("Not supported format or missing file extension... Try ASS, SSA, SRT or VTT format");
                     setTimeout(defaultStatus, 5000);
-                    break;
             }
         }
     });
