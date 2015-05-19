@@ -122,6 +122,10 @@ $(document).ready(function() {
                         currentPlayer.toggleFullscreen();
                     }
                     return false;
+                case 27: //esc
+                    pausePlayers();
+                    hidePlayers();
+                    return false;
                 case 32: //spacebar
                     if (currentPlayer.media.paused) {
                         currentPlayer.play();
@@ -140,6 +144,14 @@ $(document).ready(function() {
                     return false;
                 case 40: //down arrow
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
+                    return false;
+                case 67: //key c
+                    if (currentMode == "video") {
+                        currentPlayer.toggleCaptions();
+                    }
+                    return false;
+                case 82: //key r
+                    currentPlayer.restart();
                     return false;
             }
         }
