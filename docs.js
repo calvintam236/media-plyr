@@ -103,8 +103,11 @@ $(document).ready(function() {
     function init() {
         hidePlayers();
         defaultStatus();
-        $("input[type=url][name=source]").mouseleave(function() {
-            this.blur();
+        $(".btn-url").mouseleave(function() {
+            $("input[type=url][name=source]").blur();
+        });
+        $(".btn-url").click(function() {
+            $("input[type=url][name=source]").focus();
         });
     }
     function hidePlayers() {
@@ -223,7 +226,7 @@ $(document).ready(function() {
                     setTimeout(function() {
                         $("." + currentMode).show();
                         currentPlayer.source(source)
-                    }, 3000);
+                    }, 1000);
                     break;
                 default:
                     $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
