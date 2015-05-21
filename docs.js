@@ -129,17 +129,24 @@ $(document).ready(function() {
         currentMode = "audio";
         currentPlayer = audioPlayer;
     }
-    $(document).keypress(function(event) {
+    $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
+                case 8: //backspace or delete
+                    currentPlayer.toggleMute();
+                    return false;
+                case 9: //tab
+                    if (currentMode == "video") {
+                        currentPlayer.toggleCaptions();
+                    }
+                    return false;
                 case 13: //enter
                     if (currentMode == "video") {
                         currentPlayer.toggleFullscreen();
                     }
                     return false;
                 case 27: //esc
-                    pausePlayers();
-                    hidePlayers();
+                    currentPlayer.restart();
                     return false;
                 case 32: //spacebar
                     if (currentPlayer.media.paused) {
@@ -159,17 +166,6 @@ $(document).ready(function() {
                     return false;
                 case 40: //down arrow
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
-                    return false;
-                case 67: //key c
-                    if (currentMode == "video") {
-                        currentPlayer.toggleCaptions();
-                    }
-                    return false;
-                case 77: //key m
-                    currentPlayer.toggleMute();
-                    return false;
-                case 82: //key r
-                    currentPlayer.restart();
                     return false;
             }
         }
