@@ -112,6 +112,7 @@ $(document).ready(function() {
     }
     function hidePlayers() {
         $(".track, .video, .audio").hide();
+        $("input").blur();
     }
     function defaultStatus() {
         $("#status").text("Note: Subtitle option is available after video is selected.");
@@ -128,7 +129,7 @@ $(document).ready(function() {
         currentMode = "audio";
         currentPlayer = audioPlayer;
     }
-    $(document).keydown(function(event) {
+    $(document).keypress(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
                 case 13: //enter
@@ -179,13 +180,13 @@ $(document).ready(function() {
     $("input[type=file][name=source]").change(function() {
         var source = this.files[0];
         if (source !== undefined) {
-            hidePlayers();
             if (source.type.match(/^video/)) {
                 videoMode();
             } else if (source.type.match(/^audio/)) {
                 audioMode();
             }
             if (source.type.match(/^video/) || source.type.match(/^audio/)) {
+                hidePlayers();
                 $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
                 var reader = new FileReader();
                 reader.onload = function(event) {
@@ -202,7 +203,6 @@ $(document).ready(function() {
     $("input[type=url][name=source]").change(function() {
         var source = $(this).val();
         if (source !== undefined) {
-            hidePlayers();
             var extension = source.substr((~-source.lastIndexOf(".") >>> 0) + 2);
             switch (extension) {
                 case "mp4":
@@ -222,10 +222,11 @@ $(document).ready(function() {
                 case "mp3":
                 case "wav":
                 case "ogg":
+                    hidePlayers();
                     $("#status").text("Loading " + currentMode + "... This might take a while which depends on your Internet speed");
                     setTimeout(function() {
                         $("." + currentMode).show();
-                        currentPlayer.source(source)
+                        currentPlayer.source(source);
                     }, 1000);
                     break;
                 default:
