@@ -103,6 +103,9 @@ $(document).ready(function() {
     function init() {
         hidePlayers();
         defaultStatus();
+        $("input[type=url][name=source]").mouseleave(function() {
+            this.blur();
+        });
     }
     function hidePlayers() {
         $(".track, .video, .audio").hide();
@@ -113,6 +116,14 @@ $(document).ready(function() {
     function pausePlayers() {
         videoPlayer.pause();
         audioPlayer.pause();
+    }
+    function videoMode() {
+        currentMode = "video";
+        currentPlayer = videoPlayer;
+    }
+    function audioMode() {
+        currentMode = "audio";
+        currentPlayer = audioPlayer;
     }
     $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
@@ -162,16 +173,14 @@ $(document).ready(function() {
     $("input[type=file]").click(function() {
         pausePlayers();
     });
-    $("input[name=source]").change(function() {
+    $("input[type=file][name=source]").change(function() {
         var source = this.files[0];
         if (source !== undefined) {
             hidePlayers();
             if (source.type.match(/^video/)) {
-                currentMode = "video";
-                currentPlayer = videoPlayer;
+                videoMode();
             } else if (source.type.match(/^audio/)) {
-                currentMode = "audio";
-                currentPlayer = audioPlayer;
+                audioMode();
             }
             if (source.type.match(/^video/) || source.type.match(/^audio/)) {
                 $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
@@ -184,6 +193,41 @@ $(document).ready(function() {
             } else {
                 $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
                 setTimeout(defaultStatus, 5000);
+            }
+        }
+    });
+    $("input[type=url][name=source]").change(function() {
+        var source = $(this).val();
+        if (source !== undefined) {
+            hidePlayers();
+            var extension = source.substr((~-source.lastIndexOf(".") >>> 0) + 2);
+            switch (extension) {
+                case "mp4":
+                case "webm":
+                case "ogv":
+                    videoMode();
+                    break;
+                case "mp3":
+                case "wav":
+                case "ogg":
+                    audioMode();
+            }
+            switch (extension) {
+                case "mp4":
+                case "webm":
+                case "ogv":
+                case "mp3":
+                case "wav":
+                case "ogg":
+                    $("#status").text("Loading " + currentMode + "... This might take a while which depends on your Internet speed");
+                    setTimeout(function() {
+                        $("." + currentMode).show();
+                        currentPlayer.source(source)
+                    }, 3000);
+                    break;
+                default:
+                    $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
+                    setTimeout(defaultStatus, 5000);
             }
         }
     });
