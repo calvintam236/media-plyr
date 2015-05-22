@@ -102,11 +102,11 @@ $(document).ready(function() {
     function init() {
         hidePlayers();
         defaultStatus();
+        $(".btn-url").on("mouseenter click", function() {
+            $("input[type=url][name=source]").focus();
+        });
         $(".btn-url").mouseleave(function() {
             $("input[type=url][name=source]").blur();
-        });
-        $(".btn-url").click(function() {
-            $("input[type=url][name=source]").focus();
         });
     }
     function hidePlayers() {
