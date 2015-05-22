@@ -72,7 +72,7 @@ function toWebVTT(extension, text) {
                         processedLines[cue][2] = "";
                     } else {
                         if (processedLines[cue][2].length > 0) {
-                            processedLines[cue][2] += "\n";
+                            processedLines[cue][2] += "\r\n";
                         }
                         processedLines[cue][2] += rawLines[i];
                     }
@@ -80,18 +80,17 @@ function toWebVTT(extension, text) {
                     cue++;
                 }
             }
-            break;
     }
     if (cue > 0) {
-        webvtt += "WEBVTT\n";
+        webvtt += "WEBVTT\r\n";
         for (i = 0; i < cue; i++) {
-            webvtt += "\n" + (i + 1) + "\n";
+            webvtt += "\r\n" + (i + 1) + "\r\n";
             var timing = new Array();
             for (j = 0; j < 2; j++) {
                 timing[j] = new Date("0000-01-01T" + ("0" + processedLines[i][j]).slice(-12) + "Z");
                 processedLines[i][j] = ("0" + timing[j].getUTCHours()).slice(-2) + ":" + ("0" + timing[j].getUTCMinutes()).slice(-2) + ":" + ("0" + timing[j].getUTCSeconds()).slice(-2) + "." + ("00" + timing[j].getUTCMilliseconds()).slice(-3);
             }
-            webvtt += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
+            webvtt += processedLines[i][0] + " --> " + processedLines[i][1] + "\r\n" + processedLines[i][2] + "\r\n";
         }
     }
     console.log(webvtt);
@@ -103,12 +102,16 @@ $(document).ready(function() {
     function init() {
         hidePlayers();
         defaultStatus();
-        $("input[type=url][name=source]").mouseleave(function() {
-            this.blur();
+        $(".btn-url").on("mouseenter click", function() {
+            $("input[type=url][name=source]").focus();
+        });
+        $(".btn-url").mouseleave(function() {
+            $("input[type=url][name=source]").blur();
         });
     }
     function hidePlayers() {
         $(".track, .video, .audio").hide();
+        $("input").blur();
     }
     function defaultStatus() {
         $("#status").text("Note: Subtitle option is available after video is selected.");
@@ -128,14 +131,21 @@ $(document).ready(function() {
     $(document).keydown(function(event) {
         if (currentPlayer !== undefined) {
             switch(event.which) {
+                case 8: //backspace or delete
+                    currentPlayer.toggleMute();
+                    return false;
+                case 9: //tab
+                    if (currentMode == "video") {
+                        currentPlayer.toggleCaptions();
+                    }
+                    return false;
                 case 13: //enter
                     if (currentMode == "video") {
                         currentPlayer.toggleFullscreen();
                     }
                     return false;
                 case 27: //esc
-                    pausePlayers();
-                    hidePlayers();
+                    currentPlayer.restart();
                     return false;
                 case 32: //spacebar
                     if (currentPlayer.media.paused) {
@@ -156,17 +166,6 @@ $(document).ready(function() {
                 case 40: //down arrow
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
                     return false;
-                case 67: //key c
-                    if (currentMode == "video") {
-                        currentPlayer.toggleCaptions();
-                    }
-                    return false;
-                case 77: //key m
-                    currentPlayer.toggleMute();
-                    return false;
-                case 82: //key r
-                    currentPlayer.restart();
-                    return false;
             }
         }
     });
@@ -176,13 +175,13 @@ $(document).ready(function() {
     $("input[type=file][name=source]").change(function() {
         var source = this.files[0];
         if (source !== undefined) {
-            hidePlayers();
             if (source.type.match(/^video/)) {
                 videoMode();
             } else if (source.type.match(/^audio/)) {
                 audioMode();
             }
             if (source.type.match(/^video/) || source.type.match(/^audio/)) {
+                hidePlayers();
                 $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
                 var reader = new FileReader();
                 reader.onload = function(event) {
@@ -199,7 +198,6 @@ $(document).ready(function() {
     $("input[type=url][name=source]").change(function() {
         var source = $(this).val();
         if (source !== undefined) {
-            hidePlayers();
             var extension = source.substr((~-source.lastIndexOf(".") >>> 0) + 2);
             switch (extension) {
                 case "mp4":
@@ -219,11 +217,12 @@ $(document).ready(function() {
                 case "mp3":
                 case "wav":
                 case "ogg":
+                    hidePlayers();
                     $("#status").text("Loading " + currentMode + "... This might take a while which depends on your Internet speed");
                     setTimeout(function() {
                         $("." + currentMode).show();
-                        currentPlayer.source(source)
-                    }, 3000);
+                        currentPlayer.source(source);
+                    }, 1000);
                     break;
                 default:
                     $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
