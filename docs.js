@@ -132,7 +132,7 @@ $(document).ready(function() {
         currentPlayer = audioPlayer;
     }
     $(document).keydown(function(event) {
-        if (currentPlayer !== undefined) {
+        if ($("input:focus").length == 0 && currentPlayer !== undefined) {
             switch(event.which) {
                 case 8: //backspace or delete
                     currentPlayer.toggleMute();
