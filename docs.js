@@ -225,7 +225,7 @@ $(document).ready(function() {
                     currentPlayer.source(source);
                 }, 1000);
             } else {
-                $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
+                $("#status").text("Not supported service or format... Officially support YouTube, MP4, WEBM, MP3 and OGG formats");
                 setTimeout(defaultStatus, 5000);
             }
         }
