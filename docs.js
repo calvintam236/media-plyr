@@ -178,9 +178,9 @@ $(document).ready(function() {
     $("input[type=file][name=source]").change(function() {
         var source = this.files[0];
         if (source !== undefined) {
-            if (source.type.match(/^video/) === true) {
+            if (source.type.match(/^video/) !== null) {
                 videoMode();
-            } else if (source.type.match(/^audio/) === true) {
+            } else if (source.type.match(/^audio/) !== null) {
                 audioMode();
             }
             if (sourcePending === true) {
@@ -201,7 +201,7 @@ $(document).ready(function() {
     $("input[type=url][name=source]").change(function() {
         var source = $(this).val();
         if (source !== undefined) {
-            if (source.match(/youtube.com/) === true || source.match(/youtu.be/) === true) {
+            if (source.match(/youtube.com/) !== null || source.match(/youtu.be/) !== null) {
                 videoMode();
             } else {
                 var extension = source.substr((~-source.lastIndexOf(".") >>> 0) + 2);
