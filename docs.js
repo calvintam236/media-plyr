@@ -72,7 +72,7 @@ function toWebVTT(extension, text) {
                         processedLines[cue][2] = "";
                     } else {
                         if (processedLines[cue][2].length > 0) {
-                            processedLines[cue][2] += "\n";
+                            processedLines[cue][2] += "\r\n";
                         }
                         processedLines[cue][2] += rawLines[i];
                     }
@@ -80,18 +80,17 @@ function toWebVTT(extension, text) {
                     cue++;
                 }
             }
-            break;
     }
     if (cue > 0) {
-        webvtt += "WEBVTT\n";
+        webvtt += "WEBVTT\r\n";
         for (i = 0; i < cue; i++) {
-            webvtt += "\n" + (i + 1) + "\n";
+            webvtt += "\r\n" + (i + 1) + "\r\n";
             var timing = new Array();
             for (j = 0; j < 2; j++) {
                 timing[j] = new Date("0000-01-01T" + ("0" + processedLines[i][j]).slice(-12) + "Z");
                 processedLines[i][j] = ("0" + timing[j].getUTCHours()).slice(-2) + ":" + ("0" + timing[j].getUTCMinutes()).slice(-2) + ":" + ("0" + timing[j].getUTCSeconds()).slice(-2) + "." + ("00" + timing[j].getUTCMilliseconds()).slice(-3);
             }
-            webvtt += processedLines[i][0] + " --> " + processedLines[i][1] + "\n" + processedLines[i][2] + "\n";
+            webvtt += processedLines[i][0] + " --> " + processedLines[i][1] + "\r\n" + processedLines[i][2] + "\r\n";
         }
     }
     console.log(webvtt);
