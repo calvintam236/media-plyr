@@ -93,7 +93,6 @@ function toWebVTT(extension, text) {
             webvtt += processedLines[i][0] + " --> " + processedLines[i][1] + "\r\n" + processedLines[i][2] + "\r\n";
         }
     }
-    console.log(webvtt);
     return webvtt;
 }
 $(document).ready(function() {
@@ -105,14 +104,17 @@ $(document).ready(function() {
         $(".btn-url").on("mouseenter click", function() {
             $("input[type=url][name=source]").focus();
         });
-        $(".btn-url").mouseleave(function() {
-            $("input[type=url][name=source]").blur();
+        $(".btn").mouseleave(function() {
+            $("input").blur();
+        });
+        $("a[href=#]").click(function() {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
         });
     }
     function hidePlayers() {
         sourcePending = false;
         $(".track, .video, .audio").hide();
-        $("input").blur();
     }
     function defaultStatus() {
         $("#status").text("Note: Subtitle option is available after video is selected.");
@@ -121,12 +123,18 @@ $(document).ready(function() {
         videoPlayer.pause();
         audioPlayer.pause();
     }
+    function showPlayer(source) {
+        $("." + currentMode).show();
+        currentPlayer.source(source);
+    }
     function videoMode() {
+        $("input").blur();
         sourcePending = true;
         currentMode = "video";
         currentPlayer = videoPlayer;
     }
     function audioMode() {
+        $("input").blur();
         sourcePending = true;
         currentMode = "audio";
         currentPlayer = audioPlayer;
@@ -188,8 +196,7 @@ $(document).ready(function() {
                 $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
                 var reader = new FileReader();
                 reader.onload = function(event) {
-                    $("." + currentMode).show();
-                    currentPlayer.source(event.target.result);
+                    showPlayer(event.target.result);
                 }
                 reader.readAsDataURL(source);
             } else {
@@ -221,8 +228,7 @@ $(document).ready(function() {
                 hidePlayers();
                 $("#status").text("Loading " + currentMode + "... This might take a while which depends on your Internet speed");
                 setTimeout(function() {
-                    $("." + currentMode).show();
-                    currentPlayer.source(source);
+                    showPlayer(source);
                 }, 1000);
             } else {
                 $("#status").text("Not supported service or format... Officially support YouTube, MP4, WEBM, MP3 and OGG formats");
@@ -258,6 +264,7 @@ $(document).ready(function() {
                             default:
                                 webvtt = toWebVTT(extension, event.target.result);
                         }
+                        console.log(webvtt);
                         //currentPlayer.track("data:text/vtt;base64," + window.btoa(webvtt));
                     }
                     reader.readAsText(track);
@@ -269,10 +276,6 @@ $(document).ready(function() {
                     setTimeout(defaultStatus, 5000);
             }
         }
-    });
-    $("a[href=#]").click(function() {
-        $("html, body").animate({ scrollTop: 0 }, "slow");
-        return false;
     });
     init();
 });
