@@ -159,11 +159,7 @@ $(document).ready(function() {
                     currentPlayer.restart();
                     return false;
                 case 32: //spacebar
-                    if (currentPlayer.media.paused === true) {
-                        currentPlayer.play();
-                    } else {
-                        currentPlayer.pause();
-                    }
+                    currentPlayer.togglePlay();
                     return false;
                 case 37: //left arrow
                     currentPlayer.rewind();
