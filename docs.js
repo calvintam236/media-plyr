@@ -117,7 +117,7 @@ $(document).ready(function() {
         $(".track, .video, .audio").hide();
     }
     function defaultStatus() {
-        $("#status").text("Note: Subtitle option is available after video is selected.");
+        $("#status").text("Subtitle option will be available after video is selected");
     }
     function pausePlayers() {
         videoPlayer.pause();
