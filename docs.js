@@ -102,7 +102,7 @@ $(document).ready(function() {
         hidePlayers();
         defaultStatus();
         $(".btn-url").on("mouseenter click", function() {
-            $("input[type=text][name=source]").focus();
+            $("input[type=text]").focus();
         });
         $(".btn").mouseleave(function() {
             $("input").blur();
@@ -117,6 +117,7 @@ $(document).ready(function() {
         currentPlayer = null;
     }
     function hidePlayers() {
+        $("input").blur();
         $(".track, .video, .audio").hide();
     }
     function defaultStatus() {
@@ -136,21 +137,18 @@ $(document).ready(function() {
         $("#status").text("Subtitle is ready!");
         setTimeout(defaultStatus, 10000);
     }
-    function pausePlayers() {
-        videoPlayer.pause();
-        audioPlayer.pause();
+    function pausePlayer() {
+        currentPlayer.pause();
     }
     function showPlayer(source) {
         $("." + currentMode).show();
         currentPlayer.source(source);
     }
     function videoMode() {
-        $("input").blur();
         currentMode = "video";
         currentPlayer = videoPlayer;
     }
     function audioMode() {
-        $("input").blur();
         currentMode = "audio";
         currentPlayer = audioPlayer;
     }
@@ -192,7 +190,9 @@ $(document).ready(function() {
         }
     });
     $("input[type=file]").click(function() {
-        pausePlayers();
+        if (currentMode !== null) {
+            pausePlayer();
+        }
     });
     $("input[type=file][name=source]").change(function() {
         var source = this.files[0];
