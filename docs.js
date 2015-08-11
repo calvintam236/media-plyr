@@ -122,6 +122,20 @@ $(document).ready(function() {
     function defaultStatus() {
         $("#status").text("Subtitle option will be available after video is selected");
     }
+    function loadingSourceStatus() {
+        $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
+    }
+    function readySourceStatus() {
+        $("#status").text("Your " + currentMode + " is ready! Look for player below and click 'Play'/ spacebar");
+        setTimeout(defaultStatus, 10000);
+    }
+    function loadingTrackStatus() {
+        $("#status").text("Loading subtitle... You might encounter sync problem while playing");
+    }
+    function readyTrackStatus() {
+        $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to enable subtitle");
+        setTimeout(defaultStatus, 10000);
+    }
     function pausePlayers() {
         videoPlayer.pause();
         audioPlayer.pause();
@@ -141,7 +155,7 @@ $(document).ready(function() {
         currentPlayer = audioPlayer;
     }
     $(document).keydown(function(event) {
-        if ($("input:focus").length == 0 && currentPlayer !== null) {
+        if ($("input:focus").length == 0 && currentMode !== null) {
             switch(event.which) {
                 case 8: //backspace or delete
                     currentPlayer.toggleMute();
@@ -193,7 +207,7 @@ $(document).ready(function() {
             if (currentMode !== null) {
                 hidePlayers();
                 $("input[type=text][name=source]").val("");
-                $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
+                loadingSourceStatus();
                 var reader = new FileReader();
                 reader.onload = function(event) {
                     showPlayer(event.target.result);
@@ -219,7 +233,7 @@ $(document).ready(function() {
             }
             if (currentMode !== null) {
                 hidePlayers();
-                $("#status").text("Loading " + currentMode + "... This might take a while which depends on your Internet speed");
+                loadingSourceStatus();
                 setTimeout(function() {
                     showPlayer(source);
                 }, 1000);
@@ -231,42 +245,33 @@ $(document).ready(function() {
     });
     videoPlayer.media.addEventListener("loadstart", function() {
         $(".track").show();
-        $("#status").text("Video is ready! Look for player below and click 'Play'/ spacebar");
-        setTimeout(defaultStatus, 10000);
+        readySourceStatus();
     });
     audioPlayer.media.addEventListener("loadstart", function() {
-        $("#status").text("Audio is ready! Look for player below and click 'Play'/ spacebar");
-        setTimeout(defaultStatus, 10000);
+        readySourceStatus();
     });
     $("input[name=track]").change(function() {
         var track = this.files[0];
         if (track !== undefined) {
-            var extension = track.name.substr((~-track.name.lastIndexOf(".") >>> 0) + 2);
-            switch (extension) {
-                case "ass":
-                case "ssa":
-                case "srt":
-                case "vtt":
-                    $("#status").text("Loading subtitle... You might encounter sync problem while playing");
-                    var reader = new FileReader(), webvtt;
-                    reader.onload = function(event) {
-                        switch (extension) {
-                            case "vtt":
-                                webvtt = event.target.result.replace(/\r?\n|\r|\n/g, "\r\n");
-                                break;
-                            default:
-                                webvtt = toWebVTT(extension, event.target.result);
-                        }
-                        console.log(webvtt);
-                        //currentPlayer.track("data:text/vtt;base64," + window.btoa(webvtt));
+            if (track.name.match(/\.(ass|ssa|srt|vtt)/) !== null) {
+                loadingTrackStatus();
+                var reader = new FileReader(), webvtt;
+                reader.onload = function(event) {
+                    if (track.name.match(/\.(vtt)/) !== null) {
+                        webvtt = event.target.result.replace(/\r?\n|\r|\n/g, "\r\n");
                     }
-                    reader.readAsText(track);
-                    $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to enable subtitle");
-                    setTimeout(defaultStatus, 10000);
-                    break;
-                default:
-                    $("#status").text("Not supported format or missing file extension... Officially support ASS, SSA, SRT and VTT formats");
-                    setTimeout(defaultStatus, 5000);
+                    else
+                    {
+                        webvtt = toWebVTT(track.name.substr((~-track.name.lastIndexOf(".") >>> 0) + 2), event.target.result);
+                    }
+                    console.log(webvtt);
+                    //currentPlayer.track("data:text/vtt;base64," + window.btoa(webvtt));
+                }
+                reader.readAsText(track);
+                readyTrackStatus();
+            } else {
+                $("#status").text("Not supported format or missing file extension... Officially support ASS, SSA, SRT and VTT formats");
+                setTimeout(defaultStatus, 5000);
             }
         }
     });
