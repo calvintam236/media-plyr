@@ -1,5 +1,5 @@
 "use strict";
-var currentMode, currentPlayer, videoPlayer, audioPlayer, sourcePending;
+var videoPlayer, audioPlayer, currentMode, currentPlayer;
 plyr.setup({
     tooltips: true,
     volume: 10,
@@ -98,6 +98,7 @@ $(document).ready(function() {
     videoPlayer = $(".video .player")[0].plyr;
     audioPlayer = $(".audio .player")[0].plyr;
     function init() {
+        resetVar();
         hidePlayers();
         defaultStatus();
         $(".btn-url").on("mouseenter click", function() {
@@ -111,8 +112,11 @@ $(document).ready(function() {
             return false;
         });
     }
+    function resetVar() {
+        currentMode = null;
+        currentPlayer = null;
+    }
     function hidePlayers() {
-        sourcePending = false;
         $(".track, .video, .audio").hide();
     }
     function defaultStatus() {
@@ -128,18 +132,16 @@ $(document).ready(function() {
     }
     function videoMode() {
         $("input").blur();
-        sourcePending = true;
         currentMode = "video";
         currentPlayer = videoPlayer;
     }
     function audioMode() {
         $("input").blur();
-        sourcePending = true;
         currentMode = "audio";
         currentPlayer = audioPlayer;
     }
     $(document).keydown(function(event) {
-        if ($("input:focus").length == 0 && currentPlayer !== undefined) {
+        if ($("input:focus").length == 0 && currentPlayer !== null) {
             switch(event.which) {
                 case 8: //backspace or delete
                     currentPlayer.toggleMute();
@@ -185,10 +187,12 @@ $(document).ready(function() {
                 videoMode();
             } else if (source.type.match(/^audio/) !== null) {
                 audioMode();
+            } else {
+                resetVar();
             }
-            $("input[type=text][name=source]").val("");
-            if (sourcePending === true) {
+            if (currentMode !== null) {
                 hidePlayers();
+                $("input[type=text][name=source]").val("");
                 $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
                 var reader = new FileReader();
                 reader.onload = function(event) {
@@ -204,23 +208,16 @@ $(document).ready(function() {
     $("input[type=text][name=source]").change(function() {
         var source = $(this).val();
         if (source !== undefined && source.length > 0) {
-            if (source.match(/youtube.com/) !== null || source.match(/youtu.be/) !== null || source.match(/(\w|-){11}/)) {
+            if (source.match(/(youtube\.com|youtu\.be|(\w|-){11})/) !== null) {
                 videoMode();
+            } else if (source.match(/\.(mp4|webm|ogv)/) !== null) {
+                videoMode();
+            } else if (source.match(/\.(mp3|wav|ogg)/) !== null) {
+                audioMode();
             } else {
-                var extension = source.substr((~-source.lastIndexOf(".") >>> 0) + 2);
-                switch (extension) {
-                    case "mp4":
-                    case "webm":
-                    case "ogv":
-                        videoMode();
-                        break;
-                    case "mp3":
-                    case "wav":
-                    case "ogg":
-                        audioMode();
-                }
+                resetVar();
             }
-            if (sourcePending === true) {
+            if (currentMode !== null) {
                 hidePlayers();
                 $("#status").text("Loading " + currentMode + "... This might take a while which depends on your Internet speed");
                 setTimeout(function() {
