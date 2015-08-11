@@ -202,7 +202,7 @@ $(document).ready(function() {
     });
     $("input[type=text][name=source]").change(function() {
         var source = $(this).val();
-        if (source !== undefined) {
+        if (source !== undefined && source.length > 0) {
             if (source.match(/youtube.com/) !== null || source.match(/youtu.be/) !== null || source.match(/(\w|-){11}/)) {
                 videoMode();
             } else {
