@@ -186,6 +186,7 @@ $(document).ready(function() {
             } else if (source.type.match(/^audio/) !== null) {
                 audioMode();
             }
+            $("input[type=text][name=source]").val("");
             if (sourcePending === true) {
                 hidePlayers();
                 $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
