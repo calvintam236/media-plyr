@@ -126,14 +126,14 @@ $(document).ready(function() {
         $("#status").text("Loading " + currentMode + "... This might take a while, and your browser might freeze or crash");
     }
     function readySourceStatus() {
-        $("#status").text("Your " + currentMode + " is ready! Look for player below and click 'Play'/ spacebar");
+        $("#status").text("Your " + currentMode + " is ready!");
         setTimeout(defaultStatus, 10000);
     }
     function loadingTrackStatus() {
         $("#status").text("Loading subtitle... You might encounter sync problem while playing");
     }
     function readyTrackStatus() {
-        $("#status").text("Subtitle is ready! Click 'Caption' at the bottom of the player to enable subtitle");
+        $("#status").text("Subtitle is ready!");
         setTimeout(defaultStatus, 10000);
     }
     function pausePlayers() {
@@ -214,7 +214,7 @@ $(document).ready(function() {
                 }
                 reader.readAsDataURL(source);
             } else {
-                $("#status").text("Not supported format... Officially support MP4, WEBM, MP3 and OGG formats");
+                $("#status").text("Not supported format... Officially support MP4, WEBM, MP3, WAV and OGG formats");
                 setTimeout(defaultStatus, 5000);
             }
         }
@@ -270,7 +270,7 @@ $(document).ready(function() {
                 reader.readAsText(track);
                 readyTrackStatus();
             } else {
-                $("#status").text("Not supported format or missing file extension... Officially support ASS, SSA, SRT and VTT formats");
+                $("#status").text("Not supported format... Officially support ASS, SSA, SRT and VTT formats");
                 setTimeout(defaultStatus, 5000);
             }
         }
