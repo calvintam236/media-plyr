@@ -105,7 +105,7 @@ $(document).ready(function() {
         currentPlayer = null;
     }
     function setupPlayer(player) {
-        plyr.setup(player, {
+        return plyr.setup(player, {
             tooltips: true,
             volume: 10,
             seekTime: 3,
@@ -113,7 +113,7 @@ $(document).ready(function() {
                 defaultActive: true
             },
             debug: true
-        });
+        })[0];
     }
     function killPlayer()
     {
@@ -139,7 +139,6 @@ $(document).ready(function() {
         setTimeout(defaultStatus, 10000);
     }
     function showPlayer(source) {
-        $("." + currentMode).show();
         if (embedMode !== null) {
             currentPlayer.source({
                 type: currentMode,
@@ -156,15 +155,15 @@ $(document).ready(function() {
                 }]
             });
         }
+        $("." + currentMode).show();
     }
     function videoMode() {
         currentMode = "video";
-        setupPlayer(videoPlayer);
-        $(videoPlayer + " " + currentMode)[0].addEventListener("loadstart", function() {
+        currentPlayer = setupPlayer(videoPlayer);
+        currentPlayer.media.addEventListener("loadstart", function() {
             $(".track").show();
             readySourceStatus();
         });
-        currentPlayer = $(videoPlayer)[0].plyr;
     }
     function videoEmbedMode(videoSite) {
         embedMode = videoSite;
@@ -172,11 +171,10 @@ $(document).ready(function() {
     }
     function audioMode() {
         currentMode = "audio";
-        setupPlayer(audioPlayer);
-        $(audioPlayer + " " + currentMode)[0].addEventListener("loadstart", function() {
+        currentPlayer = setupPlayer(audioPlayer);
+        currentPlayer.media.addEventListener("loadstart", function() {
             readySourceStatus();
         });
-        currentPlayer = $(audioPlayer)[0].plyr;
     }
     $(document).keydown(function(event) {
         if ($("input:focus").length == 0 && currentMode !== null) {
