@@ -117,9 +117,9 @@ $(document).ready(function() {
     }
     function killPlayer()
     {
+        currentPlayer.pause();
         $("input").blur();
         $("." + currentMode).hide();
-        currentPlayer.destroy();
     }
     function defaultStatus() {
         $("#status").text("Subtitle option will be available after video is selected");
@@ -211,11 +211,6 @@ $(document).ready(function() {
                     currentPlayer.setVolume(currentPlayer.media.volume * 10 - 1);
                     return false;
             }
-        }
-    });
-    $("input[type=file]").click(function() {
-        if (currentMode !== null) {
-            currentPlayer.pause();
         }
     });
     $("input[type=file][name=source]").change(function() {
