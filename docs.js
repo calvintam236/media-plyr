@@ -106,6 +106,7 @@ $(document).ready(function() {
     }
     function setupPlayer(player) {
         return plyr.setup(player, {
+            iconUrl: './plyr.svg',
             tooltips: true,
             volume: 10,
             seekTime: 3,
