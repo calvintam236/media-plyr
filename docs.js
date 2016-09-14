@@ -40,6 +40,7 @@ $(document).ready(function() {
         currentPlayer.pause();
         $("input").blur();
         $("." + currentMode).hide();
+        currentPlayer.destroy();
     }
     function defaultStatus() {
         $("#status").text("Subtitle option will be available after video is selected");
