@@ -167,13 +167,13 @@ $(document).ready(function() {
                 killPlayer();
                 resetVar();
             }
-            if (source.match(/(\w|-){11}/) !== null) {
+            if (source.match(/^(\w|-){11}$/) !== null) {
                 videoEmbedMode("youtube");
-            } else if (source.match(/(\d)/) !== null) {
+            } else if (source.match(/^(\d)$/) !== null) {
                 videoEmbedMode("vimeo");
-            } else if (source.match(/\.(mp4|webm|ogv)/) !== null) {
+            } else if (source.match(/\.(mp4|webm|ogv)$/) !== null) {
                 videoMode();
-            } else if (source.match(/\.(mp3|wav|ogg)/) !== null) {
+            } else if (source.match(/\.(mp3|wav|ogg)$/) !== null) {
                 audioMode();
             }
             if (currentMode !== null) {
