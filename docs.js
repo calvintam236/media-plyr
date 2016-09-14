@@ -80,7 +80,7 @@ $(document).ready(function() {
     function videoMode() {
         currentMode = "video";
         currentPlayer = setupPlayer(videoPlayer);
-        currentPlayer.media.addEventListener("loadstart", function() {
+        currentPlayer.on("loadstart", function() {
             $(".track").show();
             readySourceStatus();
         });
@@ -92,7 +92,7 @@ $(document).ready(function() {
     function audioMode() {
         currentMode = "audio";
         currentPlayer = setupPlayer(audioPlayer);
-        currentPlayer.media.addEventListener("loadstart", function() {
+        currentPlayer.on("loadstart", function() {
             readySourceStatus();
         });
     }
